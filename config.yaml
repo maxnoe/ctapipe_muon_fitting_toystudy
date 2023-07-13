@@ -1,0 +1,26 @@
+ImageProcessor:
+  image_cleaner_type: TailcutsImageCleaner
+  TailcutsImageCleaner:
+    picture_threshold_pe:
+      - [type, "LST*", 6]
+    boundary_threshold_pe:
+      - [type, "LST*", 3]
+    keep_isolated_pixels: False
+    min_picture_neighbors: 2
+
+  ImageQualityQuery:
+    quality_criteria:
+      - ["enough_pixels", "np.count_nonzero(image) > 2"]
+      - ["enough_charge", "image.sum() > 50"]
+
+MuonProcessor:
+  ImageParameterQuery:
+    quality_criteria:
+      - ["min_pixels", "dl1_params.morphology.n_pixels > 50"]
+      - ["min_intensity", "dl1_params.hillas.intensity > 250"]
+
+  RingQuery:
+    quality_criteria:
+      - ["radius_not_nan", "np.isfinite(ring.radius.value)"]
+      - ["min_pixels", "np.count_nonzero(mask) > 50"]
+      - ["intensity_ratio", "np.abs(parameters.intensity_ratio - 1) < 0.1"]
